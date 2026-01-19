@@ -8,7 +8,6 @@ from fastmcp import FastMCP
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
 
-
 mcp = FastMCP("My MCP Server")
 
 @mcp.tool
@@ -21,7 +20,7 @@ def greet(name: str) -> str:
     Returns:
         A greeting message.
     """
-    logger.info(f"--- 🛠️ Tool: <greet> called for name: {name} ---")
+    logger.info(f"--- 🛠️ Tool: <greet> called ---\nArguments: name: {name} ")
     return f"Hello, {name}!"
 
 @mcp.tool()
@@ -41,7 +40,7 @@ def get_exchange_rate(
         A dictionary containing the exchange rate data, or an error message if the request fails.
     """
     logger.info(
-        f"--- 🛠️ Tool: <get_exchange_rate> called for converting {currency_from} to {currency_to} ---"
+        f"--- 🛠️ Tool: <get_exchange_rate> called ---\nArguments: currency_from={currency_from}, currency_to={currency_to}, currency_date={currency_date} "
     )
     try:
         response = httpx.get(
