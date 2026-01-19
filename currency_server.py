@@ -8,21 +8,8 @@ from fastmcp import FastMCP
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
 
+mcp = FastMCP("Currency MCP Server 💵")
 
-mcp = FastMCP("My MCP Server")
-
-@mcp.tool
-def greet(name: str) -> str:
-    """Use this tool to greet a person by name.
-
-    Args:
-        name: The name of the person to greet.
-    
-    Returns:
-        A greeting message.
-    """
-    logger.info(f"--- 🛠️ Tool: <greet> called for name: {name} ---")
-    return f"Hello, {name}!"
 
 @mcp.tool()
 def get_exchange_rate(
@@ -41,7 +28,7 @@ def get_exchange_rate(
         A dictionary containing the exchange rate data, or an error message if the request fails.
     """
     logger.info(
-        f"--- 🛠️ Tool: <get_exchange_rate> called for converting {currency_from} to {currency_to} ---"
+        f"--- 🛠️ Tool: get_exchange_rate called for converting {currency_from} to {currency_to} ---"
     )
     try:
         response = httpx.get(
@@ -63,7 +50,14 @@ def get_exchange_rate(
         logger.error("❌ Invalid JSON response from API")
         return {"error": "Invalid JSON response from API."}
 
+
 if __name__ == "__main__":
     logger.info(f"🚀 MCP server started on port {os.getenv('PORT', 8080)}")
-
-    mcp.run()
+    # Could also use 'sse' transport, host="0.0.0.0" required for Cloud Run.
+    asyncio.run(
+        mcp.run_async(
+            transport="http",
+            host="0.0.0.0",
+            port=os.getenv("PORT", 8080),
+        )
+    )
